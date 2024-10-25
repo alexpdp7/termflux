@@ -1,0 +1,26 @@
+[project]
+name = "termflux"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "appdirs>=1.4.4",
+    "markdownify>=0.13.1",
+    "miniflux>=1.1.1",
+    "textual>=0.85.0",
+]
+
+[tool.uv]
+dev-dependencies = [
+    "textual-dev>=1.6.1",
+]
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    # no docstrings
+    "D101", "D102", "D103",
+    # allow mutable class arguments
+    "RUF012",
+]
