@@ -43,6 +43,7 @@ class Termflux(app.App):
     BINDINGS = [
         ("q", "quit()", "quit"),
         ("r", "read()", "mark as read"),
+        ("R", "read_until_here()", "mark until here as read"),
     ]
 
     def on_mount(self) -> None:
@@ -58,7 +59,12 @@ class Termflux(app.App):
         self.table.add_column("feed")
 
         for index, entry in enumerate(self.entries):
-            self.table.add_row("*", entry["title"], entry["feed"]["title"], key=index)
+            self.table.add_row(
+                "*",
+                entry["title"],
+                entry["feed"]["title"],
+                key=str(index),
+            )
 
     def on_data_table_row_selected(self) -> None:
         self.action_select()
@@ -82,6 +88,18 @@ class Termflux(app.App):
         row_key, _ = self.table.coordinate_to_cell_key(self.table.cursor_coordinate)
         self.table.update_cell(row_key, "read", "")
         self.table.move_cursor(row=self.table.cursor_coordinate.row + 1)
+
+    def action_read_until_here(self) -> None:
+        until_entries = []
+        for row in range(self.table.cursor_coordinate.row + 1):
+            entry = self.entries[row]
+            if entry["status"] == "unread":
+                until_entries.append((row, entry))
+
+        self.client.update_entries([e["id"] for _, e in until_entries], "read")
+
+        for row, _ in until_entries:
+            self.table.update_cell(str(row), "read", "")
 
 
 class EntryScreen(screen.ModalScreen):
