@@ -103,6 +103,7 @@ class EntryScreen(screen.ModalScreen):
         self.app.pop_screen()
         self.app.action_read()
         self.app.action_select()
+        self.app.action_open()
 
 
 def ui() -> None:
