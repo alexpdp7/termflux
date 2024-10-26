@@ -34,6 +34,11 @@ def login() -> None:
     write_config(config)
 
 
+def is_configured() -> None:
+    config = read_config()
+    return "instance" in config and "api_key" in config
+
+
 def client() -> miniflux.Client:
     config = read_config()
     return miniflux.Client(config["instance"], api_key=config["api_key"])
@@ -128,5 +133,11 @@ def ui() -> None:
     Termflux().run()
 
 
-if __name__ == "__main__":
+def main() -> None:
+    if not is_configured():
+        login()
     ui()
+
+
+if __name__ == "__main__":
+    main()
